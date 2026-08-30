@@ -153,13 +153,13 @@ export function setPageSeo(opts: PageSeoOptions) {
   setMeta('name', 'twitter:description', desc);
 
   if (opts.image) {
-    const img = opts.image.startsWith('http') ? opts.image : `https://anivault-pi.vercel.app${opts.image.startsWith('/') ? '' : '/'}${opts.image}`;
+    const img = opts.image.startsWith('http') ? opts.image : `https://www.anivault.online${opts.image.startsWith('/') ? '' : '/'}${opts.image}`;
     setMeta('property', 'og:image', img);
     setMeta('name', 'twitter:image', img);
   }
 
   if (opts.url) {
-    const abs = opts.url.startsWith('http') ? opts.url : `https://anivault-pi.vercel.app${opts.url.startsWith('/') ? '' : '/'}${opts.url}`;
+    const abs = opts.url.startsWith('http') ? opts.url : `https://www.anivault.online${opts.url.startsWith('/') ? '' : '/'}${opts.url}`;
     setMeta('property', 'og:url', abs);
     setCanonical(abs);
   }
