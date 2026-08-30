@@ -6,4 +6,4 @@ Disallow: /watchlist
 Disallow: /history
 Disallow: /api/
 
-Sitemap: https://anivault-pi.vercel.app/sitemap.xml
+Sitemap: https://www.anivault.online/sitemap.xml
