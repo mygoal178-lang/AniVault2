@@ -64,65 +64,111 @@ export function AnimeDetailsPage({ malId, navigate }: AnimeDetailsPageProps) {
     }
   }, [malId]);
 
-  // Dynamic SEO: title, description, OG, canonical, JSON-LD when data is ready
-  useEffect(() => {
-    if (!details) return;
-    const local = details.local;
-    const jikan = details.anilist || details.jikan || ({} as any);
-    const title =
-      local?.custom_title ||
-      jikan.title_english ||
-      (typeof jikan.title === 'string' ? jikan.title : jikan.title?.english || jikan.title?.romaji) ||
-      `Anime #${malId}`;
-    const synopsisRaw =
-      local?.custom_description || jikan.synopsis || jikan.description || '';
-    const synopsis = String(synopsisRaw).replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
-    const cover =
-      local?.custom_cover_url ||
-      jikan.images?.jpg?.large_image_url ||
-      jikan.images?.jpg?.image_url ||
-      jikan.coverImage?.extraLarge ||
-      jikan.coverImage?.large ||
-      null;
-    const path = animePath(malId, title);
-    setPageSeo({
-  title: `${title} - Watch Online | AniVault`,
-  description: synopsis
-    ? `Watch ${title} online on AniVault. ${synopsis.slice(0, 130)}`
-    : `Watch ${title} online on AniVault. Find episodes, information, and more.`,
-  image: cover,
-  url: path,
-  type: 'video.tv_show',
-});
-    setJsonLd({
-      '@context': 'https://schema.org',
-      '@type': 'TVSeries',
-      name: title,
-      description: synopsis.slice(0, 300) || undefined,
-      image: cover || undefined,
-      url: `https://www.anivault.online${path}`,
-      genre: Array.isArray(jikan.genres)
-        ? jikan.genres.map((g: any) => (typeof g === 'string' ? g : g.name)).filter(Boolean)
-        : undefined,
-      aggregateRating: jikan.score
-        ? {
-            '@type': 'AggregateRating',
-            ratingValue: jikan.score,
-            bestRating: 10,
-            worstRating: 1,
-          }
-        : undefined,
-      numberOfEpisodes: jikan.episodes || details.episodes?.length || undefined,
-    });
-    // Soft-redirect browser URL to slug form if still on pure ID
-    if (typeof window !== 'undefined') {
-      const current = window.location.pathname;
-      if (current === `/anime/${malId}` && path !== current) {
-        window.history.replaceState({}, '', path);
-      }
+  // Dynamic SEO: title, description, OG, canonical, JSON-LD
+useEffect(() => {
+  if (!details) return;
+
+  const local = details.local;
+  const jikan = details.anilist || details.jikan || ({} as any);
+
+  const title =
+    local?.custom_title ||
+    jikan.title_english ||
+    (typeof jikan.title === 'string'
+      ? jikan.title
+      : jikan.title?.english ||
+        jikan.title?.romaji) ||
+    `Anime #${malId}`;
+
+  const synopsisRaw =
+    local?.custom_description ||
+    jikan.synopsis ||
+    jikan.description ||
+    '';
+
+  const synopsis = String(synopsisRaw)
+    .replace(/<[^>]+>/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+
+  const cover =
+    local?.custom_cover_url ||
+    jikan.images?.jpg?.large_image_url ||
+    jikan.images?.jpg?.image_url ||
+    jikan.coverImage?.extraLarge ||
+    jikan.coverImage?.large ||
+    null;
+
+  // SEO-friendly anime URL
+  const path = animePath(malId, title);
+  const canonicalUrl = `https://www.anivault.online${path}`;
+
+  // Page SEO
+  setPageSeo({
+    title: `${title} - Watch Online | AniVault`,
+
+    description: synopsis
+      ? `Watch ${title} online on AniVault. ${synopsis.slice(0, 130)}`
+      : `Watch ${title} online on AniVault. Find episodes, information, and more.`,
+
+    image: cover,
+    url: path,
+    type: 'video.tv_show',
+  });
+
+  // Structured data
+  setJsonLd({
+    '@context': 'https://schema.org',
+    '@type': 'TVSeries',
+
+    name: title,
+
+    description:
+      synopsis.slice(0, 300) ||
+      `Watch ${title} online on AniVault.`,
+
+    image: cover || undefined,
+
+    url: canonicalUrl,
+
+    genre: Array.isArray(jikan.genres)
+      ? jikan.genres
+          .map((g: any) =>
+            typeof g === 'string' ? g : g.name
+          )
+          .filter(Boolean)
+      : undefined,
+
+    aggregateRating: jikan.score
+      ? {
+          '@type': 'AggregateRating',
+          ratingValue: jikan.score,
+          bestRating: 10,
+          worstRating: 1,
+        }
+      : undefined,
+
+    numberOfEpisodes:
+      jikan.episodes ||
+      details.episodes?.length ||
+      undefined,
+  });
+
+  // Convert /anime/123 to the SEO-friendly URL
+  if (typeof window !== 'undefined') {
+    const current = window.location.pathname;
+
+    if (
+      current === `/anime/${malId}` &&
+      path !== current
+    ) {
+      window.history.replaceState({}, '', path);
     }
-    return () => setJsonLd(null);
-  }, [details, malId]);
+  }
+
+  return () => setJsonLd(null);
+
+}, [details, malId]);
 
   // Extract unique, numerically sorted uploaded episode records from database
   const uploadedEpisodes = useMemo(() => {
