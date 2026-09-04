@@ -3,13 +3,24 @@
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
   "installCommand": "npm install",
+
   "functions": {
     "api/index.ts": {
       "maxDuration": 30,
       "memory": 1024
+    },
+    "api/sitemap.ts": {
+      "maxDuration": 30,
+      "memory": 1024
     }
   },
+
   "rewrites": [
+    {
+      "source": "/sitemap.xml",
+      "destination": "/api/sitemap"
+    },
+
     {
       "source": "/api/health",
       "destination": "/api"
@@ -34,6 +45,7 @@
       "source": "/api/jikan/(.*)",
       "destination": "/api"
     },
+
     {
       "source": "/((?!api/).*)",
       "destination": "/index.html"
