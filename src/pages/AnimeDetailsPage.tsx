@@ -88,8 +88,8 @@ export function AnimeDetailsPage({ malId, navigate }: AnimeDetailsPageProps) {
     setPageSeo({
   title: `${title} - Watch Online | AniVault`,
   description: synopsis
-    ? synopsis.slice(0, 155) + (synopsis.length > 155 ? '…' : '')
-    : `Watch ${title} free online in HD with English subtitles and dub on AniVault.`,
+    ? `Watch ${title} online on AniVault. ${synopsis.slice(0, 130)}`
+    : `Watch ${title} online on AniVault. Find episodes, information, and more.`,
   image: cover,
   url: path,
   type: 'video.tv_show',
