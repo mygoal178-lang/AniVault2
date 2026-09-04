@@ -100,7 +100,7 @@ export function AnimeDetailsPage({ malId, navigate }: AnimeDetailsPageProps) {
       name: title,
       description: synopsis.slice(0, 300) || undefined,
       image: cover || undefined,
-      url: `https://anivault-pi.vercel.app${path}`,
+      url: `https://www.anivault.online${path}`,
       genre: Array.isArray(jikan.genres)
         ? jikan.genres.map((g: any) => (typeof g === 'string' ? g : g.name)).filter(Boolean)
         : undefined,
