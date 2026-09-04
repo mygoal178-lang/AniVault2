@@ -86,14 +86,14 @@ export function AnimeDetailsPage({ malId, navigate }: AnimeDetailsPageProps) {
       null;
     const path = animePath(malId, title);
     setPageSeo({
-      title: `Watch ${title} Online Free`,
-      description: synopsis
-        ? synopsis.slice(0, 155) + (synopsis.length > 155 ? '…' : '')
-        : `Watch ${title} free online in HD with English subtitles and dub on AniVault.`,
-      image: cover,
-      url: path,
-      type: 'video.tv_show',
-    });
+  title: `${title} - Watch Online | AniVault`,
+  description: synopsis
+    ? synopsis.slice(0, 155) + (synopsis.length > 155 ? '…' : '')
+    : `Watch ${title} free online in HD with English subtitles and dub on AniVault.`,
+  image: cover,
+  url: path,
+  type: 'video.tv_show',
+});
     setJsonLd({
       '@context': 'https://schema.org',
       '@type': 'TVSeries',
