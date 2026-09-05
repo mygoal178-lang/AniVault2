@@ -42,14 +42,20 @@ export interface VideoPlayerProps {
 export function checkIsIframeEmbed(url: string): boolean {
   if (!url) return false;
   const lower = url.toLowerCase();
+
+  // Direct media files → use native <video>
   if (
     lower.endsWith('.mp4') ||
     lower.endsWith('.m3u8') ||
     lower.endsWith('.webm') ||
-    lower.endsWith('.ogg')
+    lower.endsWith('.ogg') ||
+    lower.includes('.m3u8?') ||
+    lower.includes('.mp4?')
   ) {
     return false;
   }
+
+  // Known embed providers + common patterns
   return (
     lower.includes('player') ||
     lower.includes('embed') ||
@@ -67,9 +73,15 @@ export function checkIsIframeEmbed(url: string): boolean {
     lower.includes('streamwish') ||
     lower.includes('megacloud') ||
     lower.includes('vidstream') ||
+    lower.includes('megaplay') ||        // ← added
+    lower.includes('zokoanime') ||       // ← added
+    lower.includes('megaplay.buzz') ||
+    lower.includes('zokoanime.video') ||
+    lower.includes('/stream/') ||        // ← important for /stream/mal/ and /stream/s-2/
     lower.includes('/watch/') ||
     lower.includes('/v/') ||
-    lower.includes('/e/')
+    lower.includes('/e/') ||
+    lower.includes('/player/')
   );
 }
 
